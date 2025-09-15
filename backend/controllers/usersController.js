@@ -65,7 +65,7 @@ if(!isExist.rowCount>0){
 
 }
 else{
-    const verfiy = await bcrypt.compare(password,isExist.rows.password)
+    const verfiy = await bcrypt.compare(password,isExist.rows[0].password)
     if(!verfiy){
         res.status(409).json({
             success:false,
