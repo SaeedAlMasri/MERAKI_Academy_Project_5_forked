@@ -23,7 +23,7 @@ CREATE TABLE items (
     user_id INT REFERENCES users(id),
     image_url TEXT,
     status VARCHAR(50) DEFAULT 'available', 
-    is_deleted BOOLEAN DEFAULT false,
+    is_deleted BOOLEAN DEFAULT false, /* //////////////////////////////////// int */
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
