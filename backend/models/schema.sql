@@ -37,7 +37,8 @@ CREATE TABLE items (
     
 );
 CREATE TABLE role_permission (
-    id SERIAL PRIMARY KEY,
+     
     role_id INT REFERENCES roles(id),
     permission_id INT REFERENCES permissions(id)
 );
+  

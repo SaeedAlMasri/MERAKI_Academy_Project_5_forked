@@ -57,6 +57,7 @@ try{
         })
     }
 }
+
 catch(err){
     res.status(500).json({
         success:false,
@@ -186,6 +187,7 @@ const deleteItemByIdSoft = async (req, res) => {
                 result: result.rows
             });
         }
+
     } catch (err) {
         res.status(500).json({
             success: false,

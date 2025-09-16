@@ -4,9 +4,9 @@ const { createItem, getAllItem, getItemById, updateItemById, deleteItemByIdSoft 
 
 const itemRoute = express.Router();
 itemRoute.post("/createItem",createItem);
-itemRoute.post("/getAllItem",getAllItem);
-itemRoute.post("/getItem/:id",getItemById);
+itemRoute.get("/getAllItem",getAllItem);
+itemRoute.get("/getItem/:id",getItemById);
 itemRoute.put("/updateItem/:id",updateItemById);
-itemRoute.delete("deleteItem",deleteItemByIdSoft)
+itemRoute.delete("/deleteItem/:id",deleteItemByIdSoft)
 
 module.exports = itemRoute

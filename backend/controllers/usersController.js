@@ -75,7 +75,7 @@ else{
     }
   else{
     const token = jwt.sign(
-        { userId: isExist.rows[0].id, email: isExist.rows.emailو,role_id: isExist.rows[0].role_id  },
+        { userId: isExist.rows[0].id, email: isExist.rows[0].emailو,role_id: isExist.rows[0].role_id  },
         process.env.SECRET,                
         { expiresIn: "5h" } 
 
