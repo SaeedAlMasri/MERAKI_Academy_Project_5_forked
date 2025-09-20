@@ -1,0 +1,144 @@
+.App {
+  text-align: center;
+
+}
+
+.register-container {
+  max-width: 400px;
+  margin: 50px auto;
+  padding: 30px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  background-color: #f9f9f9;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.register-container input {
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.register-container button {
+  padding: 10px;
+  border-radius: 5px;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+}
+
+.register-container button:hover {
+  background-color: #0056b3;
+}
+
+.register-container p {
+  font-weight: bold;
+  margin-top: 10px;
+}
+/* Nav.css */
+.navbar {
+  background: #333;
+  padding: 15px;
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+
+.nav-link {
+  color: rgb(19, 41, 211);
+  text-decoration: none;
+  font-weight: bold;
+  transition: color 0.3s;
+}
+
+.nav-link:hover {
+  color: #00bcd4;
+}
+.home-container {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.home-title {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.categories-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.category-card {
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.category-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+}
+
+.category-name {
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.category-desc {
+  color: #555;
+  font-size: 14px;
+}
+.dropdown {
+  list-style: none;  
+  padding: 0;        
+  margin: 0;       
+}
+.dropdown li {
+  margin: 5px 0;    
+}
+.dropdown li:hover {
+  background-color: #eee;
+}
+.favorite-page {
+  padding: 20px;
+}
+
+.fav-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.fav-card {
+  width: 200px;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 15px;
+  text-align: center;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  background-color: #fff;
+  transition: transform 0.2s ease-in-out;
+}
+
+.fav-card:hover {
+  transform: scale(1.05);
+}
+
+.fav-card img {
+  width: 100%;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+.price {
+  font-weight: bold;
+  color: #e63946;
+}

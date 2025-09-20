@@ -55,8 +55,9 @@ catch(err){
 const LogIn =async (req,res)=>{
 try{
     const {email,password}= req.body;
+   
 const isExist = await pool.query(`SELECT * FROM users WHERE email = $1`,[email]);
-if(!isExist.rowCount>0){
+if(isExist.rowCount === 0){
     res.status(409).json({
         success:false,
         message:"Email Or Password Is Incorrect"
@@ -75,7 +76,7 @@ else{
     }
   else{
     const token = jwt.sign(
-        { userId: isExist.rows[0].id, email: isExist.rows[0].emailو,role_id: isExist.rows[0].role_id  },
+        { userId: isExist.rows[0].id, email: isExist.rows[0].email,role_id: isExist.rows[0].role_id  },
         process.env.SECRET,                
         { expiresIn: "5h" } 
 
@@ -94,6 +95,9 @@ else{
 
 }
 catch(err){
+  console.log(err.message);
+  
+  
     res.status(500).json({
         success:false,
         message:err.message
@@ -101,9 +105,92 @@ catch(err){
 
 }
 
+} 
+
+const updateProfileById = async(req,res)=>{
+ try{
+  const {
+    userName,
+    age,
+    Governorate,
+    District,
+    email,
+    password,
+    role_id
+    
+  } =req.body;
+  const {id} = req.params
+  const result =await pool.query(`UPDATE users SET userName = $1,age= $2 ,Governorate = $3 ,District = $4 ,email = $5 ,password = $6 ,role_id = $7     WHERE user_id = $8;
+  RETURNING *`,
+  [ userName,
+    age,
+    Governorate,
+    District,
+    email,
+    password,
+    role_id,
+    id])
+    if(result.rowCount ===0){
+      res.status(500).json({
+        success:false,
+        message:"something wrong"
+      })
+    }
+    else{
+      res.status(201).json({
+        success:true,
+        message:"Account Updated successfully"
+      })
+    }
+
+
+
+ }
+
+ catch(err){
+  res.status(500).json({
+    success:false,
+    message:err.message
+  })
+
+ }
+
 }
+
+
+const deleteAccountById = async(req,res)=>{
+try{
+  const {id} = req.params;
+const result = await pool.query(`UPDATE users SET is_deleted = 1 WHERE id = $1 RETURNING * `,[id]);
+if(result.rowCount ===0){
+  res.status(500).json({
+    success:false,
+    message:"something wrong"
+  })
+}
+else{
+  res.status(201).json({
+    success:true,
+    message:"Account Updated successfully"
+  })
+}
+}
+catch(err){
+  res.status(500).json({
+    success:false,
+    message:err.message
+  })
+
+}
+
+}
+
+
+
 
 module.exports = {
     Register,
-    LogIn
+    LogIn,
+    updateProfileById,
+    deleteAccountById
 }

@@ -1,4 +1,4 @@
-const pool = require("../db"); 
+const pool = require("../models/db"); 
 
 const authorization = (permissionNeeded) => {
   return async (req, res, next) => {
@@ -29,5 +29,6 @@ const authorization = (permissionNeeded) => {
     }
   };
 };
+
 
 module.exports = { authorization };
