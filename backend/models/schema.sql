@@ -18,12 +18,13 @@ CREATE TABLE users(
 )
 CREATE TABLE items (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(255),
+    name VARCHAR(255) NOT NULL,
     description TEXT,
     user_id INT REFERENCES users(id),
+    category_id INT REFERENCES categories(id),  
     image_url TEXT,
     status VARCHAR(50) DEFAULT 'available', 
-    is_deleted BOOLEAN DEFAULT false, /* //////////////////////////////////// int */
+    is_deleted BOOLEAN DEFAULT false,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -41,4 +42,15 @@ CREATE TABLE role_permission (
     role_id INT REFERENCES roles(id),
     permission_id INT REFERENCES permissions(id)
 );
+CREATE TABLE favorites (
+    id SERIAL PRIMARY KEY,
+    user_id INT REFERENCES users(id),
+    item_id INT REFERENCES items(id),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(user_id, item_id)
+);
+CREATE TABLE categories (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL UNIQUE,
   
+);

@@ -15,10 +15,10 @@ const authSlice = createSlice({
     reducers:{
    logIn :(state,action)=>{
      state.token = action.payload.token,
-     state.userId = action.payload.data.user_id,///////////////////////////////////////////////////////////////////////
+     state.userId = action.payload.userId,///////////////////////////////////////////////////////////////////////
      state.isLoggedIn = true
      localStorage.setItem("token",action.payload.token)
-     localStorage.setItem("userId",action.payload.data._id)
+     localStorage.setItem("userId",action.payload.userId)
      console.log("tttttttttttttt",state.userId);
      
 
