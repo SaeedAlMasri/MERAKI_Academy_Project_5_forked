@@ -197,7 +197,35 @@ const deleteItemByIdSoft = async (req, res) => {
 };
 
 
+const getItemByCatId =async (req,res)=>{
+ try{
+  
+    const {category_id} =req.params;
+    const result = pool.query(`DELETE FROM items WHERE category_id = $1 RETURNING *`,[category_id])
+    if(result.rowCount === 0){
+        res.status(409).json({
+            success:false,
+            message:"no data to DELETE"
+        })
+    }
+    else{
+        res.status(201).json({
+            success:true,
+            message:"DELETE data successfuly",
+            result:result.rows
+        })}
+    
+    }
+    catch(err){
+        res.status(500).json({
+            success:false,
+            message:err.message
+    
+        })
+    }
 
+
+}
 
 
 module.exports = {createItem,
@@ -205,6 +233,7 @@ module.exports = {createItem,
     getItemById,
     updateItemById,
     deleteItemById,
-    deleteItemByIdSoft
+    deleteItemByIdSoft,
+    getItemByCatId
 
 }

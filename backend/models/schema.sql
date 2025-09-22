@@ -54,3 +54,12 @@ CREATE TABLE categories (
     name VARCHAR(255) NOT NULL UNIQUE
   
 );
+CREATE TABLE exchanges (
+    id SERIAL PRIMARY KEY,
+    item_offered_id INT REFERENCES items(id),
+    item_requested_id INT REFERENCES items(id),
+    from_user_id INT REFERENCES users(id),
+    to_user_id INT REFERENCES users(id),
+    status VARCHAR(50) DEFAULT 'pending', 
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
