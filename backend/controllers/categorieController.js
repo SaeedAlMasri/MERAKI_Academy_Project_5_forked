@@ -62,7 +62,35 @@ const getAllCat =async (req,res)=>{
     }
     
 }
-const removeCat =async (req,res)=>{
+
+const getCatById =async (req,res)=>{
+    try{
+        const {id} = req.params;
+        const result = pool.query(`SELECT * FROM categories WHERE id = $1`,[id])
+        if(result.rowCount === 0){
+            res.status(409).json({
+                success:false,
+                message:"no data to show"
+            })
+        }
+        else{
+            res.status(201).json({
+                success:true,
+                message:"get data successfuly",
+                result:result.rows
+            })}
+        
+        }
+        catch(err){
+            res.status(500).json({
+                success:false,
+                message:err.message
+        
+            })
+        }
+
+}
+const removeCatById =async (req,res)=>{
     try{
         const {id} =req.params;
         const result =await pool.query(`DELETE FROM categories WHERE id = $1 RETURNING *`,[id])
@@ -93,4 +121,4 @@ const removeCat =async (req,res)=>{
 
 
 
-module.exports = {createCat,getAllCat,removeCat}
+module.exports = {createCat,getAllCat,removeCatById,getCatById}

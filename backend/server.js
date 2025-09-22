@@ -8,6 +8,8 @@ const userRoute = require("./routes/usersRoute");
 const roleRoute = require("./routes/roleRoute");
 const itemRoute = require("./routes/itemRoute");
 const favRoute = require("./routes/favoriteRoute");
+const exchangeRoute = require("./routes/exchangeRoute");
+const catRouter = require("./routes/categorieRoute");
 app.use(express.json())
 
 app.use(cors({
@@ -20,7 +22,8 @@ app.use("/users",userRoute)
 app.use("/roles",roleRoute)
 app.use("/item",itemRoute)
 app.use("/fav",favRoute)
-
+app.use("/cat",catRouter)
+app.use("/exchange",exchangeRoute)
 
 
 app.listen(PORT, () => {

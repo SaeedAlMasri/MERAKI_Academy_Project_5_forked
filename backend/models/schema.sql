@@ -51,6 +51,6 @@ CREATE TABLE favorites (
 );
 CREATE TABLE categories (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL UNIQUE,
+    name VARCHAR(255) NOT NULL UNIQUE
   
 );

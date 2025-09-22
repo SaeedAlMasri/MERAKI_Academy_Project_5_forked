@@ -2,17 +2,21 @@ import { useState } from "react"
 import axios from "axios"
 
 
-import {Box, Alert, Button, Snackbar, TextField } from "@mui/material"
+import {Box, Alert, Button, Snackbar, TextField, InputAdornment, IconButton } from "@mui/material"
 import { useDispatch } from "react-redux";
 import { logIn } from "../redux/authSlice";
 import {useNavigate} from "react-router-dom"
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 
 const Login = ()=>{
+
+
 const navigate = useNavigate()
 const [open, setOpen] = useState(false);
 const [message, setMessage] = useState("");
-const [severity,setseverity]= useState("info")
+const [severity,setseverity]= useState("info");
+
 const [loginData,setLoginData]= useState({
     email:"",
     password:""
@@ -20,7 +24,8 @@ const [loginData,setLoginData]= useState({
 const dispatch = useDispatch();
 const handleClose = () => setOpen(false);
 
-
+const [showPassword, setShowPassword] = useState(false);
+const handleClickShowPassword = () => setShowPassword(!showPassword);
 const logFun = ()=>{
     const {email,password}= loginData;
     if(!email || !password){
@@ -77,12 +82,24 @@ axios.post("http://localhost:5000/users/login",loginData).then((result)=>{
             </TextField>
             <TextField 
             label="Password" 
+            type={showPassword ? "text" : "password"}
             fullWidth 
             margin="normal" 
             value={loginData.password}
              onChange={(e)=>{
                 setLoginData({...loginData,password:e.target.value})
-            }}>
+                
+            }}
+             InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={handleClickShowPassword}>
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  )
+                }}
+            >
              
             </TextField>
             <Button 
