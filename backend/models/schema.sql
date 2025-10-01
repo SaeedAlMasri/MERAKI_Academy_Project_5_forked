@@ -23,6 +23,7 @@ CREATE TABLE items (
     user_id INT REFERENCES users(id),
     category_id INT REFERENCES categories(id),  
     image_url TEXT,
+    price NUMERIC(10,2) NOT NULL, 
     status VARCHAR(50) DEFAULT 'available', 
     is_deleted BOOLEAN DEFAULT false,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

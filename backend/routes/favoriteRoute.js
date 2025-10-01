@@ -6,10 +6,10 @@ const { authorization } = require("../middlewares/authorization");
 
 
 const favRoute = express.Router();
-
-favRoute.post("/addToFav",authentication,addToFav);
-favRoute.get("/getAllFav",authentication,getAllFav);
-favRoute.delete("/deleteFav/:id",authentication,removeFromFav)
+favRoute.post("/addToFav", authentication,addToFav);
+ 
+favRoute.get("/getAllFav/:user_id",authentication,getAllFav);
+favRoute.delete("/deleteFav",authentication,removeFromFav)
 
 
 

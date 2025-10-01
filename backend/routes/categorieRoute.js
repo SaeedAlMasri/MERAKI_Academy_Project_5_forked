@@ -4,7 +4,7 @@ const { authentication } = require("../middlewares/authentication");
 const catRouter = express.Router();
 
 catRouter.post("/create",authentication,createCat);
-catRouter.get("/getAllCat",authentication,getAllCat);
+catRouter.get("/getAllCat",getAllCat);
 catRouter.delete("/removeFromCat/:id",authentication,removeCatById);
 
 

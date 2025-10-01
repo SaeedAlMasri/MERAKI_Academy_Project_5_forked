@@ -6,6 +6,8 @@ import Login from './components/Login';
 import Home from './components/Home';
 import Nav from './components/Nav';
 import Favorite from './components/favorite';
+import Exchange from './components/exchange';
+import ExchangePage from './components/exchange';
 
 
 
@@ -20,7 +22,7 @@ const App = () => {
       <Route path='/login' element = {<Login/>}/>
       <Route path='/home' element = {<Home/>}/>
       <Route path='/fav' element = {<Favorite/>}/>
-
+      <Route path='/exchange' element = {<ExchangePage/>}/>
      </Routes>
     </div>
   )

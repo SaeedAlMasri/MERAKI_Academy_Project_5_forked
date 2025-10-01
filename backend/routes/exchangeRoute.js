@@ -8,8 +8,8 @@ const exchangeRoute = express.Router();
 
 
 exchangeRoute.post("/createExchange",authentication,createExchange);
-exchangeRoute.get("getExchangeById/:id",authentication,getExchangesByUser);
-exchangeRoute.put("updateExchangeById/:id",authentication,updateExchangeStatus);
+exchangeRoute.get("/getExchangeById/:id",authentication,getExchangesByUser);
+exchangeRoute.put("/updateExchangeById/:id",authentication,updateExchangeStatus);
 
 
 

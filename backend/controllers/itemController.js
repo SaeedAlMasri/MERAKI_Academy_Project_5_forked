@@ -8,10 +8,12 @@ const createItem =async (req,res)=>{
         name ,
         description  ,
         user_id ,
+        category_id,
         image_url,
+        price,
         status ,} = req.body;
 
-        const result =await pool.query(`INSERT INTO items (name,description,user_id,image_url,status) VALUES ($1,$2,$3,$4,$5) RETURNING *`,[name,description,user_id,image_url,status]);
+        const result =await pool.query(`INSERT INTO items (name,description,user_id,category_id,image_url,price,status) VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING *`,[name,description,user_id,category_id,image_url,price,status]);
         if(result.rowCount === 0){
             res.status(500).json({
                 success:false,
@@ -196,36 +198,62 @@ const deleteItemByIdSoft = async (req, res) => {
     }
 };
 
-
-const getItemByCatId =async (req,res)=>{
- try{
-  
-    const {category_id} =req.params;
-    const result = pool.query(`DELETE FROM items WHERE category_id = $1 RETURNING *`,[category_id])
-    if(result.rowCount === 0){
-        res.status(409).json({
-            success:false,
-            message:"no data to DELETE"
-        })
+const getItemByCatId = async (req,res)=>{
+    try{
+       const {category_id} = req.params;
+       const result = await pool.query(
+         `SELECT * FROM items WHERE category_id = $1 AND is_deleted = false`,
+         [category_id]
+       );
+   
+       if(result.rowCount === 0){
+           return res.status(404).json({
+               success:false,
+               message:"no items found for this category"
+           });
+       }
+   
+       res.status(200).json({
+           success:true,
+           message:"get items successfully",
+           result:result.rows
+       });
+   
+    } catch(err){
+       res.status(500).json({
+           success:false,
+           message:err.message
+       })
     }
-    else{
-        res.status(201).json({
-            success:true,
-            message:"DELETE data successfuly",
-            result:result.rows
-        })}
-    
-    }
-    catch(err){
-        res.status(500).json({
-            success:false,
-            message:err.message
-    
-        })
+   }
+   
+const getItemByUserId = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const result = await pool.query(
+      `SELECT * FROM items WHERE user_id = $1 AND is_deleted = false`,
+      [userId]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No items found for this user"
+      });
     }
 
-
-}
+    res.status(200).json({
+      success: true,
+      message: "User items fetched successfully",
+      result: result.rows
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: err.message
+    });
+  }
+};
 
 
 module.exports = {createItem,
@@ -234,6 +262,7 @@ module.exports = {createItem,
     updateItemById,
     deleteItemById,
     deleteItemByIdSoft,
-    getItemByCatId
+    getItemByCatId,
+    getItemByUserId
 
 }

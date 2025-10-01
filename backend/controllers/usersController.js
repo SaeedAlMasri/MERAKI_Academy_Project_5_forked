@@ -1,7 +1,9 @@
 const express = require("express");
 const pool = require("../models/db");
 const bcrypt = require("bcrypt")
-const jwt = require("jsonwebtoken")
+const jwt = require("jsonwebtoken");
+
+
 const Register =async (req,res)=>{
 try{
     const {
@@ -26,7 +28,7 @@ try{
     else{
         const passwordHash = await bcrypt.hash(password,8);
         const result = await pool.query(`INSERT INTO users (userName,age,Governorate,District,email,password,role_id) VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING *`,[userName,age,Governorate,District,email,passwordHash,role_id]) 
-         if(!result.rowCount>0){
+         if(result.rowCount === 0){
         res.status(500).json({
               success:false,
               message:"something wrong"
