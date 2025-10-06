@@ -24,6 +24,9 @@ app.use("/item",itemRoute)
 app.use("/fav",favRoute)
 app.use("/cat",catRouter)
 app.use("/exchange",exchangeRoute)
+app.get("/", (req, res) => {
+  res.send("✅ Backend is running successfully!");
+});
 
 
 app.listen(PORT, () => {
