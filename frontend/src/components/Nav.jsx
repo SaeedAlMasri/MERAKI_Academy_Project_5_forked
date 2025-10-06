@@ -113,7 +113,7 @@ const Nav = () => {
         {/* Center Title */}
         <Box sx={{ flexGrow: 1, display: "flex", justifyContent: "center" }}>
           <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-          saeed
+          LoopX
           </Typography>
         </Box>
 
