@@ -62,5 +62,8 @@ CREATE TABLE exchanges (
     from_user_id INT REFERENCES users(id),
     to_user_id INT REFERENCES users(id),
     status VARCHAR(50) DEFAULT 'pending', 
+    exchange_date DATE,                 
+    exchange_time TIME,                 
+    exchange_location VARCHAR(255),     
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

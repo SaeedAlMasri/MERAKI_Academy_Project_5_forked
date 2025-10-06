@@ -1,140 +1,167 @@
-import { AppBar, Box, Button, Menu, MenuItem, Toolbar, Typography } from "@mui/material"
+import { AppBar, Box, Button, Menu, MenuItem, Toolbar, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { categoryIdFun } from "../redux/itemSlice";
 import { useNavigate } from "react-router-dom";
-import {logout } from "../redux/authSlice";
+import { logout } from "../redux/authSlice";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-const Nav = ()=>{
-
+const Nav = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [categories, setCategories] = useState([]);
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorCat, setAnchorCat] = useState(null);
+  const [anchorPersonal, setAnchorPersonal] = useState(null);
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
 
   useEffect(() => {
     axios
       .get("http://localhost:5000/cat/getAllCat")
-      .then((result) => {
-        setCategories(result.data.result);
-        console.log("dacgvfsdh",result.data);
-        
-      })
+      .then((result) => setCategories(result.data.result))
       .catch((err) => console.log(err));
   }, []);
 
-  const handleClick = (event) => setAnchorEl(event.currentTarget);
-  const handleClose = () => setAnchorEl(null);
-
   const handleLogout = () => {
     dispatch(logout());
+    setAnchorPersonal(null);
     navigate("/login");
   };
 
-return(
-    <AppBar position="fixed" sx={{ background: "#F5B474", color: "#4B2E1E" }}>
-   <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
-   {isLoggedIn ?(<>
-    <Button
-              color="inherit"
-              component={Link}
-              to="/home"
-              sx={{ fontWeight: "bold" }}
-            >
-              Home
-            </Button>
+  const handleShowAll = () => {
+    dispatch(categoryIdFun(null)); 
+    navigate("/home");
+  };
+
+  return (
+    <AppBar position="fixed" sx={{ background: "#f5e6d3", color: "#3b3f72" }}>
+      <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
+        {/* Left Menu */}
+        <Box sx={{ display: "flex", gap: 2 }}>
+          {isLoggedIn && (
+            <>
+              <Button
+                color="inherit"
+                onClick={handleShowAll}
+                sx={{
+                  "&:hover": { bgcolor: "#e6d4ba" },
+                  fontWeight: "bold",
+                }}
+              >
+                Home
+              </Button>
+
+              <Button
+                color="inherit"
+                onClick={(e) => setAnchorCat(e.currentTarget)}
+                sx={{ fontWeight: "bold", "&:hover": { bgcolor: "#e6d4ba" } }}
+              >
+                Categories ▾
+              </Button>
+
+              <Menu
+                anchorEl={anchorCat}
+                open={Boolean(anchorCat)}
+                onClose={() => setAnchorCat(null)}
+                PaperProps={{
+                  sx: {
+                    backgroundColor: "#fdf7f0",
+                    color: "#3b3f72",
+                    "& .MuiMenuItem-root": {
+                      "&:hover": { bgcolor: "#3b3f72", color: "#fff" },
+                    },
+                  },
+                }}
+              >
+                <MenuItem
+                  onClick={() => {
+                    handleShowAll();
+                    setAnchorCat(null);
+                  }}
+                >
+                  ALL Items
+                </MenuItem>
+
+                {categories.map((cat) => (
+                  <MenuItem
+                    key={cat.id}
+                    onClick={() => {
+                      dispatch(categoryIdFun(cat.id));
+                      setAnchorCat(null);
+                      navigate("/home");
+                    }}
+                  >
+                    {cat.name}
+                  </MenuItem>
+                ))}
+              </Menu>
+            </>
+          )}
+
+          {!isLoggedIn && (
+            <>
+              <Button color="inherit" component={Link} to="/" sx={{ "&:hover": { bgcolor: "#e6d4ba" } }}>
+                Register
+              </Button>
+              <Button color="inherit" component={Link} to="/login" sx={{ "&:hover": { bgcolor: "#e6d4ba" } }}>
+                Login
+              </Button>
+            </>
+          )}
+        </Box>
+
+        {/* Center Title */}
+        <Box sx={{ flexGrow: 1, display: "flex", justifyContent: "center" }}>
+          <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+          saeed
+          </Typography>
+        </Box>
+
+        {/* Personal Menu */}
+        {isLoggedIn && (
+          <Box>
             <Button
               color="inherit"
-              component={Link}
-              to="/fav"
-              sx={{ fontWeight: "bold" }}
+              onClick={(e) => setAnchorPersonal(e.currentTarget)}
+              sx={{ fontWeight: "bold", "&:hover": { bgcolor: "#e6d4ba" } }}
             >
-              Favorite
-            </Button>
-            <Button
-              color="inherit"
-              onClick={handleClick}
-              sx={{ fontWeight: "bold" }}
-            >
-              Categories ▾
+              Personal ▾
             </Button>
             <Menu
-              anchorEl={anchorEl}
-              open={Boolean(anchorEl)}
-              onClose={handleClose}
+              anchorEl={anchorPersonal}
+              open={Boolean(anchorPersonal)}
+              onClose={() => setAnchorPersonal(null)}
+              anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+              transformOrigin={{ vertical: "top", horizontal: "right" }}
+              PaperProps={{
+                sx: {
+                  backgroundColor: "#fdf7f0",
+                  color: "#3b3f72",
+                  "& .MuiMenuItem-root": {
+                    "&:hover": { bgcolor: "#3b3f72", color: "#fff" },
+                  },
+                },
+              }}
             >
-                <MenuItem
-                  key={0}
-                  onClick={() => {
-                    dispatch(categoryIdFun(undefined));
-                    handleClose();
-                    navigate("/home");
-                  }}
-                  sx={{ color: "#4B2E1E", fontWeight: "bold" }}
-                >
-                 ALL Items
-                </MenuItem>
-              {categories.map((cat) => (
-                <MenuItem
-                  key={cat.id}
-                  onClick={() => {
-                    dispatch(categoryIdFun(cat.id));
-                    handleClose();
-                    navigate("/home");
-                  }}
-                  sx={{ color: "#4B2E1E", fontWeight: "bold" }}
-                >
-                  {cat.name}
-                </MenuItem>
-              ))}
+              <MenuItem component={Link} to="/createPost" onClick={() => setAnchorPersonal(null)}>
+                Create Post
+              </MenuItem>
+              <MenuItem component={Link} to="/fav" onClick={() => setAnchorPersonal(null)}>
+                Favorite
+              </MenuItem>
+              <MenuItem component={Link} to="/exchange" onClick={() => setAnchorPersonal(null)}>
+                Exchange
+              </MenuItem>
+              <MenuItem component={Link} to="/editProfile" onClick={() => setAnchorPersonal(null)}>
+                Edit Profile
+              </MenuItem>
+              <MenuItem onClick={handleLogout}>Logout</MenuItem>
             </Menu>
-   </>):(<>
-    <Button
-              color="inherit"
-              component={Link}
-              to="/"
-              sx={{ fontWeight: "bold" }}
-              >
-              REgister
-            </Button>
-   </>)}
+          </Box>
+        )}
+      </Toolbar>
+    </AppBar>
+  );
+};
 
- <Box sx={{ flexGrow: 1, display: "flex", justifyContent: "center" }}>
-          <Typography variant="h6">saeed</Typography>
-        </Box>
-        
-           {isLoggedIn ?(<>
-            <Button
-              color="inherit"
-              sx={{ fontWeight: "bold" }}
-            >
-             Edit Profile
-            </Button>
-            <Button
-              color="inherit"
-              sx={{ fontWeight: "bold" }}
-              onClick={handleLogout}
-            >
-              Logout
-            </Button>
-           </>):(<>
-            <Button
-              color="inherit"
-              component={Link}
-              to="/login"
-              sx={{ fontWeight: "bold" }}
-              >
-              login
-            </Button>
-           </>)}
-            
-</Toolbar>
-
-</AppBar>
-)
-}
-
-export default Nav
+export default Nav;

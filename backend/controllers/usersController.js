@@ -110,55 +110,60 @@ catch(err){
 
 } 
 
-const updateProfileById = async(req,res)=>{
- try{
-  const {
-    userName,
-    age,
-    Governorate,
-    District,
-    email,
-    password,
-    role_id
-    
-  } =req.body;
-  const {id} = req.params
-  const result =await pool.query(`UPDATE users SET userName = $1,age= $2 ,Governorate = $3 ,District = $4 ,email = $5 ,password = $6 ,role_id = $7     WHERE user_id = $8;
-  RETURNING *`,
-  [ userName,
-    age,
-    Governorate,
-    District,
-    email,
-    password,
-    role_id,
-    id])
-    if(result.rowCount ===0){
-      res.status(500).json({
-        success:false,
-        message:"something wrong"
-      })
-    }
-    else{
-      res.status(201).json({
-        success:true,
-        message:"Account Updated successfully"
-      })
+const updateProfileById = async (req, res) => {
+  try {
+    const {
+      userName,
+      age,
+      Governorate,
+      District,
+      email,
+      password,
+      role_id
+    } = req.body;
+
+    const { id } = req.params;
+
+   
+    let passwordHash = password;
+    if (password) {
+      passwordHash = await bcrypt.hash(password, 8);
     }
 
+    const result = await pool.query(
+      `UPDATE users 
+       SET userName = $1,
+           age = $2,
+           Governorate = $3,
+           District = $4,
+           email = $5,
+           password = $6,
+           role_id = $7
+       WHERE id = $8
+       RETURNING *`,
+      [userName, age, Governorate, District, email, passwordHash, role_id, id]
+    );
 
+    if (result.rowCount === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
 
- }
+    res.status(200).json({
+      success: true,
+      message: "Account updated successfully",
+      user: result.rows[0],
+    });
 
- catch(err){
-  res.status(500).json({
-    success:false,
-    message:err.message
-  })
-
- }
-
-}
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: err.message,
+    });
+  }
+};
 
 
 const deleteAccountById = async(req,res)=>{
@@ -188,12 +193,31 @@ catch(err){
 
 }
 
-
-
+const getUserById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await pool.query(
+      `SELECT * FROM users WHERE id = $1 AND is_deleted = 0`,
+      [id]
+    );
+    if (result.rowCount === 0) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+    res.status(200).json({ success: true, result: result.rows });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
 
 module.exports = {
-    Register,
-    LogIn,
-    updateProfileById,
-    deleteAccountById
-}
+  Register,
+  LogIn,
+  updateProfileById,
+  deleteAccountById,
+  getUserById, 
+};
+
+
+
+
+ 

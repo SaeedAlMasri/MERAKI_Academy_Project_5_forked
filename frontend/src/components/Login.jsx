@@ -1,125 +1,143 @@
-import { useState } from "react"
-import axios from "axios"
-
-
-import {Box, Alert, Button, Snackbar, TextField, InputAdornment, IconButton } from "@mui/material"
+import { useState } from "react";
+import axios from "axios";
+import {
+  Box,
+  Alert,
+  Button,
+  Snackbar,
+  TextField,
+  InputAdornment,
+  IconButton,
+} from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { logIn } from "../redux/authSlice";
-import {useNavigate} from "react-router-dom"
-import { Visibility, VisibilityOff } from "@mui/icons-material";
 
+const Login = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-const Login = ()=>{
+  const [loginData, setLoginData] = useState({
+    email: "",
+    password: "",
+  });
 
+  const [showPassword, setShowPassword] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [message, setMessage] = useState("");
+  const [severity, setSeverity] = useState("info");
 
-const navigate = useNavigate()
-const [open, setOpen] = useState(false);
-const [message, setMessage] = useState("");
-const [severity,setseverity]= useState("info");
+  const handleClose = () => setOpen(false);
+  const handleClickShowPassword = () => setShowPassword(!showPassword);
 
-const [loginData,setLoginData]= useState({
-    email:"",
-    password:""
-})
-const dispatch = useDispatch();
-const handleClose = () => setOpen(false);
+  const logFun = () => {
+    const { email, password } = loginData;
 
-const [showPassword, setShowPassword] = useState(false);
-const handleClickShowPassword = () => setShowPassword(!showPassword);
-const logFun = ()=>{
-    const {email,password}= loginData;
-    if(!email || !password){
-        setMessage("Please fill in all fields before submitting!");
-        setseverity("error")
-        setOpen(true);
-       
-        return;
-    
+    if (!email || !password) {
+      setMessage("Please fill in all fields before submitting!");
+      setSeverity("error");
+      setOpen(true);
+      return;
     }
-axios.post("http://localhost:5000/users/login",loginData).then((result)=>{
-    
-    dispatch(logIn(result.data))
-    setMessage("Login Successfuly");
-    setseverity("success")
-    setOpen(true);
-    navigate("/home");
-   
-    
 
-}).catch((err)=>{
-    
-    setMessage(err.message);
-    setseverity("error")
-    setOpen(true);
+    axios.post("http://localhost:5000/users/login", loginData)
+      .then((res) => {
+        dispatch(logIn(res.data));
+        setMessage("Login Successful!");
+        setSeverity("success");
+        setOpen(true);
+        navigate("/home");
+      })
+      .catch((err) => {
+        setMessage(err.response?.data?.message || "Login Failed!");
+        setSeverity("error");
+        setOpen(true);
+      });
+  };
 
-})
- 
- 
-
-}
-
-
-    return (
-        <Box
+  return (
+    <Box
+      sx={{
+        minHeight: "100vh",
+        background: "linear-gradient(to bottom right, #d6ccc2, #4b3f72)", // باكجراوند ترابي وكحلي
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "flex-start", // ثابت أسفل Navbar
+        pt: 14, // padding top لتثبيت البوكس أسفل navbar
+      }}
+    >
+      <Box
         sx={{
-            width: 400,
-            margin: "50px auto",
-            padding: 3,
-            border: "1px solid #ccc",
-            borderRadius: 2,
-            boxShadow: 3
-            
-          }}>
-            <TextField
-             label="Email" 
-             fullWidth 
-             margin="normal" 
-             value={loginData.email}
-             onChange={(e)=>{
-                setLoginData({...loginData,email:e.target.value})
-            }}>
-             
-            </TextField>
-            <TextField 
-            label="Password" 
-            type={showPassword ? "text" : "password"}
-            fullWidth 
-            margin="normal" 
-            value={loginData.password}
-             onChange={(e)=>{
-                setLoginData({...loginData,password:e.target.value})
-                
-            }}
-             InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton onClick={handleClickShowPassword}>
-                        {showPassword ? <VisibilityOff /> : <Visibility />}
-                      </IconButton>
-                    </InputAdornment>
-                  )
-                }}
-            >
-             
-            </TextField>
-            <Button 
-             variant="contained" 
-             color="primary" 
-             fullWidth 
-             sx={{ mt: 2 }}
-            onClick={()=>{
-                logFun()
-            }}>LogIn</Button>
+          width: 400,
+          padding: 4,
+          borderRadius: 3,
+          boxShadow: 5,
+          backgroundColor: "#f5f5f5", // لون فاتح للبوكس
+        }}
+      >
+        <TextField
+          label="Email"
+          fullWidth
+          margin="normal"
+          value={loginData.email}
+          onChange={(e) => setLoginData({ ...loginData, email: e.target.value })}
+          sx={{
+            "& .MuiInputBase-root": { color: "#1a237e" },
+            "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": { borderColor: "#1a237e" },
+            "& .MuiInputLabel-root": { color: "#1a237e" },
+          }}
+        />
 
+        <TextField
+          label="Password"
+          type={showPassword ? "text" : "password"}
+          fullWidth
+          margin="normal"
+          value={loginData.password}
+          onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton onClick={handleClickShowPassword}>
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
+          sx={{
+            "& .MuiInputBase-root": { color: "#1a237e" },
+            "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": { borderColor: "#1a237e" },
+            "& .MuiInputLabel-root": { color: "#1a237e" },
+          }}
+        />
 
-         <Snackbar open={open} autoHideDuration={3000} onClose={handleClose} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
-           <Alert onClose={handleClose} severity={severity} sx={{ width: '100%' }}>
-             {message}
-           </Alert>
-         </Snackbar>
+        <Button
+          variant="contained"
+          fullWidth
+          sx={{
+            mt: 2,
+            backgroundColor: "#1a237e",
+            "&:hover": { backgroundColor: "#3949ab" },
+          }}
+          onClick={logFun}
+        >
+          Log In
+        </Button>
 
-        </Box>
-    )
-}
+        <Snackbar
+          open={open}
+          autoHideDuration={3000}
+          onClose={handleClose}
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        >
+          <Alert onClose={handleClose} severity={severity} sx={{ width: '100%' }}>
+            {message}
+          </Alert>
+        </Snackbar>
+      </Box>
+    </Box>
+  );
+};
 
-export default Login
+export default Login;

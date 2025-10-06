@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   Container,
@@ -8,7 +9,6 @@ import {
   Card,
   CardContent,
   Button,
-  Divider,
   Snackbar,
   Alert,
 } from "@mui/material";
@@ -20,6 +20,7 @@ const ExchangePage = () => {
 
   const userId = useSelector((state) => state.auth.userId);
   const token = useSelector((state) => state.auth.token);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchExchanges();
@@ -56,10 +57,16 @@ const ExchangePage = () => {
         { status: "accepted" },
         { headers: { Authorization: `Bearer ${token}` } }
       );
+
       setReceivedRequests(prev =>
-        prev.map(req => req.id === exchangeId ? { ...req, status: "accepted" } : req)
+        prev.map(req =>
+          req.id === exchangeId ? { ...req, status: "accepted" } : req
+        )
       );
+
       showSnackbar("Request accepted!", "success");
+
+      navigate(`/exchange/schedule/${exchangeId}`);
     } catch (err) {
       console.log(err.message);
       showSnackbar("Failed to accept request", "error");
@@ -84,77 +91,105 @@ const ExchangePage = () => {
   };
 
   return (
-    <Box sx={{ minHeight: "100vh", py: 10 }}>
+    <Box sx={{ minHeight: "100vh", py: 10, background: "linear-gradient(to bottom right, #d6ccc2, #4b3f72)" }}>
       <Container>
-        <Typography variant="h4" gutterBottom textAlign="center" sx={{ mb: 4 }}>
+        <Typography
+          variant="h4"
+          gutterBottom
+          textAlign="center"
+          sx={{ mb: 6, fontWeight: "bold", color: "#fff" }}
+        >
           Exchange Requests
         </Typography>
 
-      
-        <Typography variant="h6" gutterBottom>
+        {/* Sent Requests */}
+        <Typography variant="h6" gutterBottom sx={{ color: "#fff", mb: 3 }}>
           Sent Requests
         </Typography>
-        {sentRequests.length > 0 ? (
-          sentRequests.map((req) => (
-            <Card key={req.id} sx={{ mb: 2 }}>
-              <CardContent>
-                <Typography>
-                  You offered <b>{req.item_offered_id}</b> for <b>{req.item_requested_id}</b> to user {req.to_user_id}
-                </Typography>
-                <Typography color="text.secondary">
-                  Status: {req.status}
-                </Typography>
-              </CardContent>
-            </Card>
-          ))
-        ) : (
-          <Typography>No sent requests</Typography>
-        )}
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 2, alignItems: "center" }}>
+          {sentRequests.length > 0 ? (
+            sentRequests.map((req) => (
+              <Card
+                key={req.id}
+                sx={{
+                  borderRadius: 3,
+                  boxShadow: 5,
+                  transition: "transform 0.2s",
+                  "&:hover": { transform: "scale(1.02)" },
+                  p: 2,
+                  bgcolor: "#fff",
+                  width: "100%",
+                  maxWidth: 600,
+                }}
+              >
+                <CardContent>
+                  <Typography sx={{ color: "#1a237e" }}>
+                    You offered <b>{req.item_offered_id}</b> for <b>{req.item_requested_id}</b> to user {req.to_user_id}
+                  </Typography>
+                  <Typography color="text.secondary">Status: {req.status}</Typography>
+                </CardContent>
+              </Card>
+            ))
+          ) : (
+            <Typography color="#fff">No sent requests</Typography>
+          )}
+        </Box>
 
-        <Divider sx={{ my: 4 }} />
+        {/* Divider أجمل */}
+        <Box sx={{ my: 6, borderTop: "2px dashed #fff" }}></Box>
 
-      
-        <Typography variant="h6" gutterBottom>
+        {/* Received Requests */}
+        <Typography variant="h6" gutterBottom sx={{ color: "#fff", mb: 3 }}>
           Received Requests
         </Typography>
-        {receivedRequests.length > 0 ? (
-          receivedRequests.map((req) => (
-            <Card key={req.id} sx={{ mb: 2 }}>
-              <CardContent>
-                <Typography>
-                  User {req.from_user_id} offered <b>{req.item_offered_id}</b> for <b>{req.item_requested_id}</b>
-                </Typography>
-                <Typography color="text.secondary">
-                  Status: {req.status}
-                </Typography>
-              </CardContent>
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 2, alignItems: "center" }}>
+          {receivedRequests.length > 0 ? (
+            receivedRequests.map((req) => (
+              <Card
+                key={req.id}
+                sx={{
+                  borderRadius: 3,
+                  boxShadow: 5,
+                  transition: "transform 0.2s",
+                  "&:hover": { transform: "scale(1.02)" },
+                  p: 2,
+                  bgcolor: "#fff",
+                  width: "100%",
+                  maxWidth: 600,
+                }}
+              >
+                <CardContent>
+                  <Typography sx={{ color: "#1a237e" }}>
+                    User {req.from_user_id} offered <b>{req.item_offered_id}</b> for <b>{req.item_requested_id}</b>
+                  </Typography>
+                  <Typography color="text.secondary">Status: {req.status}</Typography>
+                </CardContent>
 
-            
-              {req.status === "pending" && (
-                <Box sx={{ display: "flex", gap: 2, p: 2 }}>
-                  <Button
-                    variant="contained"
-                    color="success"
-                    onClick={() => handleAccept(req.id)}
-                  >
-                    Accept
-                  </Button>
-                  <Button
-                    variant="contained"
-                    color="error"
-                    onClick={() => handleReject(req.id)}
-                  >
-                    Reject
-                  </Button>
-                </Box>
-              )}
-            </Card>
-          ))
-        ) : (
-          <Typography>No received requests</Typography>
-        )}
+                {req.status === "pending" && (
+                  <Box sx={{ display: "flex", gap: 2, mt: 2 }}>
+                    <Button
+                      variant="contained"
+                      color="success"
+                      onClick={() => handleAccept(req.id)}
+                    >
+                      Accept
+                    </Button>
+                    <Button
+                      variant="contained"
+                      color="error"
+                      onClick={() => handleReject(req.id)}
+                    >
+                      Reject
+                    </Button>
+                  </Box>
+                )}
+              </Card>
+            ))
+          ) : (
+            <Typography color="#fff">No received requests</Typography>
+          )}
+        </Box>
 
-  
         <Snackbar
           open={snackbar.open}
           autoHideDuration={3000}

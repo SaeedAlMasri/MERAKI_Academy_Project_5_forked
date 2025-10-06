@@ -19,6 +19,7 @@ import {
   Select,
   Snackbar,
   Alert,
+  CircularProgress,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
@@ -35,14 +36,15 @@ const Home = () => {
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
 
+  const [loading, setLoading] = useState(true); // حالة اللودينج
+
   const category_id = useSelector((state) => state.items.categoryId);
   const userId = useSelector((state) => state.auth.userId);
   const token = useSelector((state) => state.auth.token);
 
   useEffect(() => {
-    fetchItems();
-    fetchFav();
-    fetchMyItems();
+    setLoading(true);
+    Promise.all([fetchItems(), fetchFav(), fetchMyItems()]).finally(() => setLoading(false));
   }, [category_id]);
 
   const fetchItems = async () => {
@@ -61,7 +63,7 @@ const Home = () => {
   };
 
   const fetchFav = () => {
-    axios
+    return axios
       .get(`http://localhost:5000/fav/getAllFav/${userId}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
@@ -147,14 +149,40 @@ const Home = () => {
     }
   };
 
+  if (loading) {
+    return (
+      <Box
+        sx={{
+          minHeight: "100vh",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          background: "linear-gradient(to bottom right, #d6ccc2, #4b3f72)",
+        }}
+      >
+        <CircularProgress
+          size={80}
+          thickness={5}
+          sx={{ color: "#1a237e" }}
+        />
+      </Box>
+    );
+  }
+
   return (
-    <Box sx={{ minHeight: "100vh", py: 10 }}>
+    <Box
+      sx={{
+        minHeight: "100vh",
+        py: 10,
+        background: "linear-gradient(to bottom right, #d6ccc2, #4b3f72)",
+      }}
+    >
       <Container>
         <Typography
           variant="h4"
           gutterBottom
           textAlign="center"
-          sx={{ fontWeight: "bold", mb: 4 }}
+          sx={{ fontWeight: "bold", mb: 4, color: "#1a237e" }}
         >
           Welcome to Home
         </Typography>
@@ -168,7 +196,19 @@ const Home = () => {
         >
           {items.length > 0 ? (
             items.map((item) => (
-              <Card key={item.id}>
+              <Card
+                key={item.id}
+                sx={{
+                  borderRadius: 3,
+                  boxShadow: 5,
+                  overflow: "hidden",
+                  transition: "transform 0.2s",
+                  "&:hover": { transform: "scale(1.03)" },
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between",
+                }}
+              >
                 {item.image_url ? (
                   <CardMedia
                     component="img"
@@ -191,9 +231,15 @@ const Home = () => {
                   </CardMedia>
                 )}
 
-                <CardContent>
-                  <Typography variant="h6">{item.name}</Typography>
-                  <Typography variant="subtitle1" fontWeight="bold">
+                <CardContent sx={{ flexGrow: 1 }}>
+                  <Typography variant="h6" sx={{ color: "#1a237e" }}>
+                    {item.name}
+                  </Typography>
+                  <Typography
+                    variant="subtitle1"
+                    fontWeight="bold"
+                    sx={{ color: "#4b3f72" }}
+                  >
                     {item.price ? `$${item.price}` : "No price"}
                   </Typography>
                 </CardContent>
@@ -201,18 +247,22 @@ const Home = () => {
                 {item.user_id !== userId && (
                   <Button
                     variant="contained"
-                    fullWidth
                     sx={{
                       mt: 1,
-                      mb: 1,
-                      bgcolor: "#F5B474",
-                      "&:hover": { bgcolor: "#8B4513" },
-                      color: "#4B2E1E",
+                      mb: 2,
+                      mx: 2,
+                      bgcolor: "#1a237e",
+                      "&:hover": {
+                        transform: "scale(1.05)",
+                        bgcolor: "#3949ab",
+                      },
+                      color: "#fff",
                       fontWeight: "bold",
+                      transition: "transform 0.15s",
                     }}
                     onClick={() => handleOpen(item)}
                   >
-                    Exchange Item
+                    Exchange
                   </Button>
                 )}
 
@@ -230,7 +280,9 @@ const Home = () => {
               </Card>
             ))
           ) : (
-            <Typography textAlign="center">No products found.</Typography>
+            <Typography textAlign="center" color="#1a237e">
+              No products found.
+            </Typography>
           )}
         </Box>
 
@@ -261,13 +313,17 @@ const Home = () => {
               onClick={handleExchange}
               variant="contained"
               disabled={!selectedOffered}
+              sx={{
+                bgcolor: "#1a237e",
+                color: "#fff",
+                "&:hover": { bgcolor: "#3949ab" },
+              }}
             >
               Confirm Exchange
             </Button>
           </DialogActions>
         </Dialog>
 
-        {/* Snackbar */}
         <Snackbar
           open={snackbarOpen}
           autoHideDuration={3000}

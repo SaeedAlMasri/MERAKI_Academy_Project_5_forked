@@ -56,11 +56,34 @@ const createExchange = async (req, res) => {
       res.status(500).json({ success: false, message: "Error updating exchange status" });
     }
   };
-
+  const scheduleExchange = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { exchange_date, exchange_time, location } = req.body;
+  
+      const result = await pool.query(
+        `UPDATE exchanges 
+         SET exchange_date = $1, exchange_time = $2, location = $3, status = 'scheduled'
+         WHERE id = $4 RETURNING *`,
+        [exchange_date, exchange_time, location, id]
+      );
+  
+      if (result.rowCount === 0) {
+        return res.status(404).json({ success: false, message: "Exchange not found" });
+      }
+  
+      res.status(200).json({ success: true, exchange: result.rows[0] });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ success: false, message: "Error scheduling exchange" });
+    }
+  };
+  
 
   module.exports = {
     createExchange,
     getExchangesByUser,
     updateExchangeStatus,
+    scheduleExchange
   };
 

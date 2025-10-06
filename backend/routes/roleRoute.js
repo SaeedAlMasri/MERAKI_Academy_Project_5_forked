@@ -6,4 +6,5 @@ roleRoute.post("/addRole",createNewRole);
 roleRoute.post("/addPermission",createNewPermission)
 roleRoute.post("/role_Permission",createNewRolePermission)
 
+
 module.exports = roleRoute;

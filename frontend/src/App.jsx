@@ -8,6 +8,9 @@ import Nav from './components/Nav';
 import Favorite from './components/favorite';
 import Exchange from './components/exchange';
 import ExchangePage from './components/exchange';
+import ScheduleExchange from './components/ScheduleExchange';
+import CreatePost from './components/createPost';
+import EditProfile from './components/editProfile';
 
 
 
@@ -23,6 +26,9 @@ const App = () => {
       <Route path='/home' element = {<Home/>}/>
       <Route path='/fav' element = {<Favorite/>}/>
       <Route path='/exchange' element = {<ExchangePage/>}/>
+      <Route path='/exchange/schedule/:id' element={<ScheduleExchange />} />
+      <Route path='/createPost' element={<CreatePost />} />
+      <Route path='/editProfile' element={<EditProfile />} />
      </Routes>
     </div>
   )
