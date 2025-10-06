@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const app =express();
-const PORT =5000;
+const PORT =process.env.PORT;
 require("dotenv").config();
 const db = require("./models/db");
 const userRoute = require("./routes/usersRoute");
@@ -13,7 +13,7 @@ const catRouter = require("./routes/categorieRoute");
 app.use(express.json())
 
 app.use(cors({
-  origin: "http://localhost:5173",
+  origin: "*",
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"]
 }));   
